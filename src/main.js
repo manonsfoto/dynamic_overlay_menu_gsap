@@ -46,19 +46,110 @@ document.addEventListener("DOMContentLoaded", () => {
   gsap.set(menuImage, { scale: 0.5, opacity: 0.25 });
   gsap.set(menuLinks, { y: "150%" });
   gsap.set(linkHighlighter, { y: "150%" });
+  
+  const defaultLinkText=document.querySelector(".menu-link:first-child a span")
+  if(defaultLinkText){
+    const linkWidth=defaultLinkText.offsetWidth;
+    linkHighlighter.style.width=linkWidth + "px";
+    currentHightlighterWidth=linkWidth;
+    targetHighlighterWidth=linkWidth;
+  
+    const defaultLinkTextElement=document.querySelector(".menu-link:first-child")
+    const linkRect=defaultLinkTextElement.getBoundingClientRect();
+    const menuWrapperRect=menuLinksWrapper.getBoundingClientRect();
+    const initialX=linkRect.left-menuWrapperRect.left;
+    currentHighlighterX=initialX;
+    targetHighlighterX=initialX;
+  }
+
+  function toggleMenu(){
+    if(isMenuAnimating) return;
+    isMenuAnimating=true;
+
+    if(!isMenuOpen){
+      gsap.to(container,{
+       y:"-40%",
+       opacity:0.25,
+       duration:1.25,
+       ease:"expo.out",
+        
+      })
+
+      gsap.to(menuOverlay,{
+        clipPath:"polygon(0 100%, 100% 100%, 100% 0, 0 0)",
+        duration:1.25,
+        ease:"expo.out",
+        onComplete:()=>{
+     gsap.set(container, {y:"40%"});
+     gsap.set(".menu-link",{overflow:"visible"})
+
+     isMenuOpen=true;
+     isMenuAnimating=false;
+        }
+      })
+
+      gsap.to(menuContent,{
+        y:"0%",
+        opacity:1,
+        duration:1.5,
+        ease:"expo.out",
+       
+      })
+      gsap.to(menuImage,{
+        scale:1,
+        opacity:1,
+        duration:1.5,
+        ease:"expo.out",
+      
+      })
+      gsap.to(menuLinks,{
+        y:"0%",
+        duration:1.25,
+        stagger:0.1,
+        delay:0.25,
+        ease:"expo.out",
+      })
+      gsap.to(linkHighlighter,{
+        y:"0%",
+        duration:1,        
+        delay:1,
+        ease:"expo.out",
+      })
+    }else{
+      gsap.to(container,{
+        y:"0%",
+        opacity:1,
+        duration:1.25,
+        ease:"expo.out",
+      });
+      gsap.to(menuLinks,{
+        y:"-200%",
+        duration:1.25,
+        ease:"expo.out",
+      })
+      gsap.to(menuContent,{
+        y:"-100%",
+        opacity:0.25,
+        duration:1.25,
+        ease:"expo.out",
+      })
+      gsap.to(menuImage,{
+        y:"-100%",
+        opacity:0.5,
+        duration:1.25,
+        ease:"expo.out",
+      })
+     
+      gsap.to(menuOverlay,{
+        clipPath:"polygon(0 0, 100% 0, 100% 0, 0 0)",
+        duration:1.25,
+        ease:"expo.out",
+
+        onComplete:()=>{
+        
+        }
+      })
+    }
+    
+  }
 });
-
-const defaultLinkText=document.querySelector(".menu-link:first-child a span")
-if(defaultLinkText){
-  const linkWidth=defaultLinkText.offsetWidth;
-  linkHighlighter.style.width=linkWidth + "px";
-  currentHightlighterWidth=linkWidth;
-  targetHighlighterWidth=linkWidth;
-
-  const defaultLinkTextElement=document.querySelector(".menu-link:first-child")
-  const linkRect=defaultLinkTextElement.getBoundingClientRect();
-  const menuWrapperRect=menuLinksWrapper.getBoundingClientRect();
-  const initialX=linkRect.left-menuWrapperRect.left;
-  currentHighlighterX=initialX;
-  targetHighlighterX=initialX;
-}
